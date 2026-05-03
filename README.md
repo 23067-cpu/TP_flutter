@@ -1,6 +1,6 @@
 <div align="center">
 
-# 📝 Bloc-Notes App — Stockage Local & Communication API
+#  Bloc-Notes App — Stockage Local & Communication API
 
 ![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)
 ![Dart](https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white)
@@ -10,7 +10,7 @@ Ce dépôt contient l'application complète pour le **TP Bloc-Notes** (Module D�
 ---
 </div>
 
-## 👨‍🎓 Informations de l'étudiant
+##  Informations de l'étudiant
 - **Nom:** Mohamed salem chavii
 - **Matricule:** 23067
 - **Année:** L2
@@ -18,7 +18,7 @@ Ce dépôt contient l'application complète pour le **TP Bloc-Notes** (Module D�
 
 ---
 
-## 🎯 Objectifs atteints (Exigences du TP)
+## Objectifs atteints (Exigences du TP)
 L'application répond à 100% aux exigences définies dans l'énoncé du TP :
 
 1. **Partie 1 - SharedPreferences (Stockage Local) :** 
@@ -64,7 +64,7 @@ my_app_flutter/
 
 ---
 
-## 🚀 Comment exécuter le projet ?
+## Comment exécuter le projet ?
 1. Assurez-vous que l'environnement **Flutter** est correctement installé sur votre machine.
 2. Clonez le dépôt :
    ```bash
