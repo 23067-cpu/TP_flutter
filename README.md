@@ -1,6 +1,6 @@
 <div align="center">
 
-# 📝 Bloc-Notes App — Stockage Local & Communication API
+# Bloc-Notes App — Stockage Local & Communication API
 
 ![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)
 ![Dart](https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white)
@@ -10,7 +10,7 @@ Ce dépôt contient l'application complète pour le **TP Bloc-Notes** (Module D�
 ---
 </div>
 
-## 👨‍🎓 Informations de l'étudiant
+## Informations de l'étudiant
 - **Nom:** Mohamed salem chavii
 - **Matricule:** 23067
 - **Année:** L2
@@ -18,7 +18,7 @@ Ce dépôt contient l'application complète pour le **TP Bloc-Notes** (Module D�
 
 ---
 
-## 🎯 Objectifs atteints (Exigences du TP)
+## Objectifs atteints (Exigences du TP)
 L'application répond à 100% aux exigences définies dans l'énoncé du TP :
 
 1. **Partie 1 - SharedPreferences (Stockage Local) :** 
@@ -30,7 +30,7 @@ L'application répond à 100% aux exigences définies dans l'énoncé du TP :
 
 ---
 
-## ✨ Fonctionnalités
+## Fonctionnalités
 L'application propose les fonctionnalités clés suivantes :
 - **Que fait l'application exactement ?** : C'est un gestionnaire de notes intelligent qui combine un stockage local pour le mode hors ligne, et une communication avec une API pour récupérer ou enregistrer des données sur un serveur distant.
 - **Comment ajouter une note ?** : Cliquez sur le bouton flottant `+` en bas de l'écran, entrez un titre et un contenu, puis validez en cliquant sur "Enregistrer".
@@ -40,7 +40,7 @@ L'application propose les fonctionnalités clés suivantes :
 
 ---
 
-## 🔄 Mécanisme de fonctionnement
+## Mécanisme de fonctionnement
 Le flux d'exécution de l'application suit un processus logique et optimisé :
 1. **Démarrage de l'application :** Flutter initialise les liaisons de base et lance la fonction asynchrone `main()`.
 2. **Chargement des données locales :** Le service `NoteService` lit instantanément les notes enregistrées dans `SharedPreferences` et les charge en mémoire avant même l'affichage de l'interface.
@@ -51,7 +51,7 @@ Le flux d'exécution de l'application suit un processus logique et optimisé :
 
 ---
 
-## 🛠️ Packages utilisés
+## Packages utilisés
 - `shared_preferences: ^2.5.5` - Pour le stockage local persistant (clé-valeur).
 - `http: ^1.6.0` - Pour effectuer les requêtes HTTP vers l'API REST.
 - `connectivity_plus: ^7.1.1` - Pour vérifier l'état de la connexion réseau (En ligne / Hors ligne).
@@ -77,7 +77,7 @@ my_app_flutter/
 
 ---
 
-## ⚙️ Explication des fonctions principales
+## Explication des fonctions principales
 - `_loadNotes()` & `_saveNotes()` : Présentes dans `NoteService`, elles permettent de lire et d'enregistrer automatiquement la liste des notes en mémoire locale.
 - `toJson()` & `fromJson()` : Présentes dans le modèle `Note`, elles transforment les objets en format JSON pour faciliter leur stockage ou leur envoi sur le réseau, tout en gérant correctement le type `DateTime`.
 - `getAllNotes()`, `createNote()`, `deleteNote()` : Fonctions de `ApiService` effectuant les requêtes HTTP et décodant la réponse du serveur.
@@ -85,7 +85,7 @@ my_app_flutter/
 
 ---
 
-## 🚀 Comment exécuter le projet ?
+## Comment exécuter le projet ?
 1. Assurez-vous que l'environnement **Flutter** est correctement installé sur votre machine.
 2. Clonez le dépôt :
    ```bash
