@@ -10,21 +10,25 @@ class ApiNotesPage extends StatefulWidget {
 }
 
 class _ApiNotesPageState extends State<ApiNotesPage> {
+  // Instance du service API pour gérer les requêtes
   final ApiService _apiService = ApiService();
+  
+  // Variables d'état pour gérer l'affichage de la page
   List<Note> _notes = [];
-  bool _isLoading = true;
-  String? _errorMessage;
+  bool _isLoading = true; // Indicateur de chargement
+  String? _errorMessage; // Stocke l'erreur éventuelle
 
   @override
   void initState() {
     super.initState();
-    _fetchNotes();
+    _fetchNotes(); // Récupération initiale des notes lors de l'ouverture de la page
   }
 
+  // Fonction asynchrone pour charger toutes les notes depuis l'API
   Future<void> _fetchNotes() async {
     setState(() {
       _isLoading = true;
-      _errorMessage = null;
+      _errorMessage = null; // Réinitialiser l'erreur
     });
 
     try {
@@ -41,6 +45,7 @@ class _ApiNotesPageState extends State<ApiNotesPage> {
     }
   }
 
+  // Affiche une boîte de dialogue pour créer une nouvelle note via l'API
   void _showAddNoteDialog(BuildContext context) {
     final titleController = TextEditingController();
     final contentController = TextEditingController();
@@ -49,17 +54,17 @@ class _ApiNotesPageState extends State<ApiNotesPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Add API Note'),
+          title: const Text('Ajouter une note API'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: titleController,
-                decoration: const InputDecoration(labelText: 'Title'),
+                decoration: const InputDecoration(labelText: 'Titre'),
               ),
               TextField(
                 controller: contentController,
-                decoration: const InputDecoration(labelText: 'Content'),
+                decoration: const InputDecoration(labelText: 'Contenu'),
                 maxLines: 3,
               ),
             ],
@@ -67,16 +72,17 @@ class _ApiNotesPageState extends State<ApiNotesPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
+              child: const Text('Annuler'),
             ),
             ElevatedButton(
               onPressed: () async {
+                // Créer une note seulement si les champs ne sont pas vides
                 if (titleController.text.isNotEmpty && contentController.text.isNotEmpty) {
-                  Navigator.pop(context);
+                  Navigator.pop(context); // Fermer la boîte de dialogue
                   _createNote(titleController.text, contentController.text);
                 }
               },
-              child: const Text('Save'),
+              child: const Text('Enregistrer'),
             ),
           ],
         );
@@ -84,6 +90,7 @@ class _ApiNotesPageState extends State<ApiNotesPage> {
     );
   }
 
+  // Création d'une note en effectuant une requête POST
   Future<void> _createNote(String title, String content) async {
     setState(() {
       _isLoading = true;
@@ -91,12 +98,12 @@ class _ApiNotesPageState extends State<ApiNotesPage> {
     try {
       final newNote = await _apiService.createNote(title, content);
       setState(() {
-        _notes.insert(0, newNote);
+        _notes.insert(0, newNote); // L'insérer visuellement en haut de la liste
         _isLoading = false;
       });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Note created successfully')),
+          const SnackBar(content: Text('Note créée avec succès sur le serveur')),
         );
       }
     } catch (e) {
@@ -105,14 +112,17 @@ class _ApiNotesPageState extends State<ApiNotesPage> {
       });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to create note: $e')),
+          SnackBar(content: Text('Échec de la création : $e')),
         );
       }
     }
   }
 
+  // Suppression d'une note en effectuant une requête DELETE
   Future<void> _deleteNote(String id, int index) async {
     final note = _notes[index];
+    
+    // Suppression optimiste (immédiate) dans l'interface utilisateur
     setState(() {
       _notes.removeAt(index);
     });
@@ -120,20 +130,21 @@ class _ApiNotesPageState extends State<ApiNotesPage> {
     try {
       final success = await _apiService.deleteNote(id);
       if (!success) {
-        throw Exception('Server returned error');
+        throw Exception('Le serveur a renvoyé une erreur lors de la suppression');
       }
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Note deleted')),
+          const SnackBar(content: Text('Note supprimée du serveur')),
         );
       }
     } catch (e) {
+      // En cas d'échec, remettre la note dans la liste
       setState(() {
         _notes.insert(index, note);
       });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to delete note: $e')),
+          SnackBar(content: Text('Échec de la suppression : $e')),
         );
       }
     }
@@ -143,28 +154,31 @@ class _ApiNotesPageState extends State<ApiNotesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('API Notes'),
+        title: const Text('Notes de l\'API'),
         actions: [
+          // Bouton d'actualisation manuelle de l'API
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _fetchNotes,
           )
         ],
       ),
+      // Affichage du widget correspondant à l'état actuel (Chargement, Erreur ou Liste)
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator()) // Spinner pendant le chargement
           : _errorMessage != null
               ? Center(
+                  // Affichage du message d'erreur si l'API échoue
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Icon(Icons.error_outline, color: Colors.red, size: 48),
                       const SizedBox(height: 16),
-                      Text('Error: $_errorMessage', textAlign: TextAlign.center),
+                      Text('Erreur : $_errorMessage', textAlign: TextAlign.center),
                       const SizedBox(height: 16),
                       ElevatedButton(
                         onPressed: _fetchNotes,
-                        child: const Text('Retry'),
+                        child: const Text('Réessayer'),
                       )
                     ],
                   ),
@@ -174,6 +188,7 @@ class _ApiNotesPageState extends State<ApiNotesPage> {
                   itemBuilder: (context, index) {
                     final note = _notes[index];
                     return Dismissible(
+                      // Permettre de glisser pour supprimer la note via l'API
                       key: Key('${note.id}_$index'),
                       background: Container(
                         color: Colors.red,
@@ -195,6 +210,7 @@ class _ApiNotesPageState extends State<ApiNotesPage> {
                     );
                   },
                 ),
+      // Bouton permettant l'ajout d'une note via POST
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddNoteDialog(context),
         child: const Icon(Icons.add),

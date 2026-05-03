@@ -4,8 +4,13 @@ import 'services/note_service.dart';
 import 'pages/home_page.dart';
 
 void main() async {
+  // S'assurer que les liaisons de widgets sont initialisées avant d'utiliser des plugins
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialisation de SharedPreferences pour le stockage local
   final prefs = await SharedPreferences.getInstance();
+  
+  // Injection de dépendance pour NoteService
   final noteService = NoteService(prefs);
 
   runApp(MyApp(noteService: noteService));
@@ -21,6 +26,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Bloc-Notes',
       debugShowCheckedModeBanner: false,
+      // Configuration du thème clair
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple, brightness: Brightness.light),
         useMaterial3: true,
@@ -33,6 +39,7 @@ class MyApp extends StatelessWidget {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
         ),
       ),
+      // Configuration du thème sombre
       darkTheme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple, brightness: Brightness.dark),
         useMaterial3: true,
@@ -45,7 +52,7 @@ class MyApp extends StatelessWidget {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
         ),
       ),
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.system, // S'adapte au thème du système
       home: HomePage(noteService: noteService),
     );
   }

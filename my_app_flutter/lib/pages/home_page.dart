@@ -14,12 +14,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  // Variable pour suivre l'état de la connexion internet
   bool _isConnected = false;
 
   @override
   void initState() {
     super.initState();
-    _checkConnectivity();
+    _checkConnectivity(); // Vérification initiale
+    
+    // Écouter les changements de connexion en temps réel
     Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> results) {
       bool isConnected = results.isNotEmpty && results.first != ConnectivityResult.none;
       if (mounted) {
@@ -30,6 +33,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  // Vérifier la connexion internet actuelle
   Future<void> _checkConnectivity() async {
     final results = await Connectivity().checkConnectivity();
     setState(() {
@@ -37,6 +41,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  // Afficher une boîte de dialogue pour ajouter ou modifier une note
   void _showAddNoteDialog(BuildContext context, {Note? existingNote}) {
     final titleController = TextEditingController(text: existingNote?.title ?? '');
     final contentController = TextEditingController(text: existingNote?.content ?? '');
@@ -45,17 +50,17 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(existingNote == null ? 'Add Note' : 'Edit Note'),
+          title: Text(existingNote == null ? 'Ajouter une note' : 'Modifier la note'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: titleController,
-                decoration: const InputDecoration(labelText: 'Title'),
+                decoration: const InputDecoration(labelText: 'Titre'),
               ),
               TextField(
                 controller: contentController,
-                decoration: const InputDecoration(labelText: 'Content'),
+                decoration: const InputDecoration(labelText: 'Contenu'),
                 maxLines: 3,
               ),
             ],
@@ -63,18 +68,20 @@ class _HomePageState extends State<HomePage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
+              child: const Text('Annuler'),
             ),
             ElevatedButton(
               onPressed: () {
                 if (titleController.text.isNotEmpty && contentController.text.isNotEmpty) {
                   setState(() {
                     if (existingNote == null) {
+                      // Créer une nouvelle note locale
                       widget.noteService.addNote(
                         titleController.text,
                         contentController.text,
                       );
                     } else {
+                      // Mettre à jour la note existante
                       widget.noteService.updateNote(
                         existingNote.id,
                         titleController.text,
@@ -85,7 +92,7 @@ class _HomePageState extends State<HomePage> {
                   Navigator.pop(context);
                 }
               },
-              child: const Text('Save'),
+              child: const Text('Enregistrer'),
             ),
           ],
         );
@@ -99,25 +106,28 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text('Bloc-Notes'),
         actions: [
+          // Icône indiquant si l'appareil est en ligne ou hors ligne
           IconButton(
             icon: Icon(
               _isConnected ? Icons.cloud_done : Icons.cloud_off,
               color: _isConnected ? Colors.green : Colors.red,
             ),
-            tooltip: _isConnected ? 'Online' : 'Offline',
+            tooltip: _isConnected ? 'En ligne' : 'Hors ligne',
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(_isConnected ? 'You are online' : 'You are offline'),
+                  content: Text(_isConnected ? 'Vous êtes en ligne' : 'Vous êtes hors ligne'),
                 ),
               );
             },
           ),
+          // Bouton de synchronisation visible uniquement si connecté
           if (_isConnected)
             IconButton(
               icon: const Icon(Icons.sync),
-              tooltip: 'API Sync',
+              tooltip: 'Synchronisation API',
               onPressed: () {
+                // Naviguer vers la page de l'API
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const ApiNotesPage()),
@@ -126,12 +136,13 @@ class _HomePageState extends State<HomePage> {
             ),
         ],
       ),
+      // Afficher un message si aucune note locale, sinon afficher la liste
       body: widget.noteService.notes.isEmpty
           ? Center(
               child: Text(
                 _isConnected
-                    ? 'No local notes. Tap sync to view remote notes.'
-                    : 'No local notes and offline.',
+                    ? 'Aucune note locale. Appuyez sur synchroniser pour voir l\'API.'
+                    : 'Aucune note locale et vous êtes hors ligne.',
                 style: const TextStyle(fontSize: 16),
               ),
             )
@@ -139,6 +150,7 @@ class _HomePageState extends State<HomePage> {
               itemCount: widget.noteService.notes.length,
               itemBuilder: (context, index) {
                 final note = widget.noteService.notes[index];
+                // Dismissible permet de supprimer en balayant (swipe)
                 return Dismissible(
                   key: Key(note.id),
                   background: Container(
@@ -150,10 +162,10 @@ class _HomePageState extends State<HomePage> {
                   direction: DismissDirection.endToStart,
                   onDismissed: (direction) {
                     setState(() {
-                      widget.noteService.deleteNote(note.id);
+                      widget.noteService.deleteNote(note.id); // Suppression locale
                     });
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Note deleted')),
+                      const SnackBar(content: Text('Note supprimée')),
                     );
                   },
                   child: Card(
@@ -167,6 +179,7 @@ class _HomePageState extends State<HomePage> {
                 );
               },
             ),
+      // Bouton d'action flottant pour ajouter une nouvelle note locale
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddNoteDialog(context),
         child: const Icon(Icons.add),

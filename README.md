@@ -1,74 +1,83 @@
-<div dir="rtl" align="right">
+<div align="center">
 
 # 📝 Bloc-Notes App — Stockage Local & Communication API
 
 ![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)
 ![Dart](https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white)
 
-هذا المستودع يحتوي على التطبيق الشامل الخاص بـ **TP Bloc-Notes** لمقرر تطوير تطبيقات الهاتف المحمول. تم تطوير التطبيق لدمج تقنيات التخزين المحلي (Local Storage) والاتصال بخوادم خارجية (REST API) للعمل في كلتا الحالتين (متصل/غير متصل).
+Ce dépôt contient l'application complète pour le **TP Bloc-Notes** (Module Développement Mobile). L'application intègre le stockage local et la communication avec une API REST pour fonctionner de manière fluide, avec ou sans connexion Internet.
+
+---
+</div>
+
+## 👨‍🎓 Informations de l'étudiant
+- **Nom:** Mohamed salem chavii
+- **Matricule:** 23067
+- **Année:** L2
+- **Spécialité:** DWM
 
 ---
 
-## 🎯 الأهداف التي تم تحقيقها (TP Requirements)
-التطبيق يغطي جميع الشروط المطلوبة في الـ TP بنسبة 100%:
-1. **الجزء الأول - SharedPreferences:** 
-   تم ضمان بقاء الملاحظات محلياً حتى بعد إغلاق التطبيق كلياً وإعادة تشغيله.
-2. **الجزء الثاني - API REST:**
-   تم ربط التطبيق بواجهة برمجة تطبيقات لإجراء عمليات الجلب (`GET`)، الإنشاء (`POST`)، والحذف (`DELETE`) للبيانات.
-3. **الجزء الثالث - المزامنة (Local + Distant):**
-   التطبيق يتعرف تلقائياً على حالة الاتصال بالإنترنت (`Offline/Online`)، ويُعدل واجهة المستخدم لعرض إمكانيات مزامنة السيرفر فقط عند توفر الشبكة.
+## 🎯 Objectifs atteints (Exigences du TP)
+L'application répond à 100% aux exigences définies dans l'énoncé du TP :
+
+1. **Partie 1 - SharedPreferences (Stockage Local) :** 
+   Les notes survivent à la fermeture de l'application. Elles sont enregistrées et chargées localement.
+2. **Partie 2 - API REST (Communication distante) :**
+   L'application est connectée à une API REST (JSONPlaceholder) permettant de récupérer (`GET`), créer (`POST`) et supprimer (`DELETE`) des notes avec la gestion des erreurs (`try/catch`).
+3. **Partie 3 - Synchronisation Local + Distant :**
+   L'application détecte automatiquement l'état de la connexion Internet. Elle adapte l'interface utilisateur (icône de statut) et permet l'accès aux fonctionnalités de l'API uniquement si l'appareil est connecté.
 
 ---
 
-## 🛠️ الحزم المستخدمة (Packages)
-- `shared_preferences: ^2.5.5` - للتخزين المحلي (Key-Value).
-- `http: ^1.6.0` - للاتصال بـ REST API وتنفيذ الطلبات.
-- `connectivity_plus: ^7.1.1` - لاكتشاف حالة الشبكة بشكل ديناميكي (Online/Offline).
+## 🛠️ Packages utilisés
+- `shared_preferences: ^2.5.5` - Pour le stockage local persistant (clé-valeur).
+- `http: ^1.6.0` - Pour effectuer les requêtes HTTP vers l'API REST.
+- `connectivity_plus: ^7.1.1` - Pour vérifier l'état de la connexion réseau (En ligne / Hors ligne).
 
 ---
 
-## 📁 بنية الملفات (File Structure)
-تم تنظيم المشروع ليتبع أفضل الممارسات في كتابة كود نظيف وقابل للقراءة:
+## 📁 Structure du projet
+Le projet a été organisé proprement pour séparer l'interface utilisateur de la logique métier :
+
 ```text
 my_app_flutter/
 ├── lib/
-│   ├── main.dart               # نقطة الانطلاق وإعداد الـ Theme والـ SharedPreferences
+│   ├── main.dart               # Point d'entrée de l'application, initialise SharedPreferences
 │   ├── models/
-│   │   └── note.dart           # نموذج الملاحظة يحتوي على (id, title, content) مع دوال (toJson/fromJson)
+│   │   └── note.dart           # Modèle de données Note avec les méthodes de sérialisation toJson/fromJson
 │   ├── services/
-│   │   ├── note_service.dart   # إدارة التخزين المحلي للملاحظات (load, save, add, delete, update)
-│   │   └── api_service.dart    # إدارة طلبات السيرفر (getAllNotes, createNote, deleteNote)
+│   │   ├── note_service.dart   # Gère les opérations locales (ajout, modification, suppression)
+│   │   └── api_service.dart    # Gère les requêtes vers l'API REST
 │   └── pages/
-│       ├── home_page.dart      # واجهة الملاحظات المحلية مع مراقبة حالة الاتصال عبر connectivity_plus
-│       └── api_notes_page.dart # واجهة مخصصة لعرض وإدارة الملاحظات القادمة من الـ API
+│       ├── home_page.dart      # Page d'accueil affichant les notes locales et l'état de la connexion
+│       └── api_notes_page.dart # Page dédiée à l'interaction avec le serveur distant
 ```
 
 ---
 
-## ⚙️ الوظائف الأساسية (Functions)
-- `_loadNotes()` و `_saveNotes()`: في `NoteService` لضمان حفظ واسترجاع قائمة الملاحظات من ذاكرة الجهاز.
-- `toJson()` و `fromJson()`: في `note.dart` لتهيئة البيانات لتكون جاهزة للتخزين كـ String أو الإرسال عبر الإنترنت كـ JSON.
-- `getAllNotes()` و `createNote()` و `deleteNote()`: في `ApiService` للتعامل مع السيرفر وتطبيق الـ Try/Catch للتعامل مع أخطاء الاتصال.
-- `_checkConnectivity()`: مستمع مستمر يعرض أيقونة خضراء (متصل) أو حمراء (مفصول) في الـ AppBar.
+## ⚙️ Explication des fonctions principales
+- `_loadNotes()` & `_saveNotes()` : Présentes dans `NoteService`, elles permettent de lire et d'enregistrer automatiquement la liste des notes en mémoire locale.
+- `toJson()` & `fromJson()` : Présentes dans le modèle `Note`, elles transforment les objets en format JSON pour faciliter leur stockage ou leur envoi sur le réseau, tout en gérant correctement le type `DateTime`.
+- `getAllNotes()`, `createNote()`, `deleteNote()` : Fonctions de `ApiService` effectuant les requêtes HTTP et décodant la réponse du serveur.
+- `_checkConnectivity()` : Listener utilisé dans `HomePage` pour mettre à jour instantanément l'interface lorsque l'appareil gagne ou perd sa connexion Internet.
 
 ---
 
-## 🚀 طريقة تشغيل المشروع
-1. تأكد من توفر بيئة عمل **Flutter** على جهازك.
-2. قم باستنساخ المستودع:
+## 🚀 Comment exécuter le projet ?
+1. Assurez-vous que l'environnement **Flutter** est correctement installé sur votre machine.
+2. Clonez le dépôt :
    ```bash
    git clone https://github.com/23067-cpu/TP_flutter.git
    ```
-3. ادخل لمسار التطبيق وحمّل الحزم:
+3. Naviguez vers le répertoire du projet et installez les dépendances :
    ```bash
    cd TP_flutter/my_app_flutter
    flutter pub get
    ```
-4. لتشغيل التطبيق واختبار جميع الخصائص باحترافية، يُفضل تشغيله كبرنامج Windows للحفاظ على بيانات الذاكرة المحلية أو على جهاز Android حقيقي:
+4. Lancez l'application. Pour observer le fonctionnement optimal du stockage local pendant vos tests (surtout après une fermeture), privilégiez l'exécution en tant qu'application Windows ou sur un appareil Android :
    ```bash
    flutter run -d windows
    ```
 
-*(ملاحظة: إذا شغلت التطبيق على Chrome في وضع Debug، فإن الذاكرة المحلية تُحذف بمجرد إغلاق المتصفح)*
-
-</div>
+*(Note : L'exécution sur Chrome en mode Debug crée une session temporaire ; par conséquent, les données locales seront réinitialisées à la fermeture du navigateur.)*
