@@ -30,7 +30,7 @@ L'application répond à 100% aux exigences définies dans l'énoncé du TP :
 
 ---
 
-## 🛠️ Packages utilisés
+## Packages utilisés
 - `shared_preferences: ^2.5.5` - Pour le stockage local persistant (clé-valeur).
 - `http: ^1.6.0` - Pour effectuer les requêtes HTTP vers l'API REST.
 - `connectivity_plus: ^7.1.1` - Pour vérifier l'état de la connexion réseau (En ligne / Hors ligne).
@@ -56,7 +56,7 @@ my_app_flutter/
 
 ---
 
-## ⚙️ Explication des fonctions principales
+## Explication des fonctions principales
 - `_loadNotes()` & `_saveNotes()` : Présentes dans `NoteService`, elles permettent de lire et d'enregistrer automatiquement la liste des notes en mémoire locale.
 - `toJson()` & `fromJson()` : Présentes dans le modèle `Note`, elles transforment les objets en format JSON pour faciliter leur stockage ou leur envoi sur le réseau, tout en gérant correctement le type `DateTime`.
 - `getAllNotes()`, `createNote()`, `deleteNote()` : Fonctions de `ApiService` effectuant les requêtes HTTP et décodant la réponse du serveur.
